@@ -26,7 +26,7 @@ module Cell
       @value.map { |e| e.to_s }.join
     end
 
-    # # Calculete from first to end of array (#BUG In sample cell A2 = 9.6, but we have 4.8)
+    # # Calculate from first to end of array (#BUG In sample cell A2 = 9.6, but we have 4.8)
     # def calculate!(start_index= 0)
     #   if @value[start_index].instance_of?(Number) &&  @value[start_index + 1].instance_of?(Symbol) && @value[start_index + 2].instance_of?(Number)
     #     @value[start_index] = @value[start_index].send( @value[start_index + 1], @value[start_index + 2] )
@@ -40,7 +40,7 @@ module Cell
     #   end
     # end
     #
-    # # Calculete from end to first of array (In sample cell A2 = 9.6)
+    # # Calculate from end to first element of array (In sample cell A2 = 9.6)
     def calculate!(start_index= -1)
       if @value[start_index].instance_of?(Number) &&
          @value[start_index - 1].instance_of?(Symbol) &&
