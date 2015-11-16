@@ -5,12 +5,12 @@ class Sheet
   TAB = "\t"
 
   def initialize(str)
-    @cels = {}
+    @cells = {}
     row_index = 1
     str.each_line do |row|
       col_index = 'A'
       row.split(TAB).each do |c|
-        @cels[col_index + row_index.to_s] = Cell.build(c.chomp)
+        @cells[col_index + row_index.to_s] = Cell.build(c.chomp)
         col_index.next!
       end
       row_index += 1
@@ -18,11 +18,11 @@ class Sheet
   end
 
   def [](key)
-    @cels[key]
+    @cells[key]
   end
 
   def []=(key, cell)
-    @cels[key] = cell
+    @cells[key] = cell
   end
 
   def evaluate!(multithread: true)
@@ -48,7 +48,7 @@ class Sheet
   def to_s()
     result = ''
     last_row_name = 1
-    @cels.each_pair do |key, cell_val|
+    @cells.each_pair do |key, cell_val|
       if last_row_name == key[/\d+/].to_i
         result << TAB
       else
@@ -63,7 +63,7 @@ class Sheet
   private
 
     def expressions()
-      @cels.select { |k, v| v.instance_of?(Cell::Expression) }
+      @cells.select { |k, v| v.instance_of?(Cell::Expression) }
     end
 
     def calculate_expression!(multithread: true)
@@ -80,7 +80,7 @@ class Sheet
       count = 0
       expressions.each_pair { |key, cell|
         if cell.value.size == 1 && cell.value.first.instance_of?(Cell::Number)
-          @cels[key] = cell.value.first
+          @cells[key] = cell.value.first
           count += 1
         end
       }
@@ -89,17 +89,17 @@ class Sheet
 
     def check_reference!()
       count = 0
-      @cels.each do |key, cell|
+      @cells.each do |key, cell|
         if cell.instance_of?(Cell::Expression)
           cell.value.each_with_index { |e, i|
-            if e.instance_of?(Cell::Reference) && @cels[e.value].instance_of?(Cell::Number)
-              @cels[key].value[i] = @cels[e.value]
+            if e.instance_of?(Cell::Reference) && @cells[e.value].instance_of?(Cell::Number)
+              @cells[key].value[i] = @cells[e.value]
               count += 1
             end
           }
         end
         if cell.instance_of?(Cell::Reference)
-          @cels[key] = @cels[cell.value] if @cels[cell.value].instance_of?(Cell::Number)
+          @cells[key] = @cells[cell.value] if @cells[cell.value].instance_of?(Cell::Number)
           count += 1
         end
       end
